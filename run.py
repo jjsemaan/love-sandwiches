@@ -27,7 +27,23 @@ def get_sales_data():
     print("Example: 23,45,34,67,89,2\n")
 
     data_str = input("Enter your data here: ")
-    print(f"The data provided is {data_str}")
+
+    sales_data = data_str.split(",")
+    validate_data(sales_data)
+
+def validate_data(values):
+    """
+    Check if exactly six values are enterd.
+    Check if these can be converted to ingers
+    """
+    try:
+        if len(values) != 6:
+            raise ValueError(
+                f"Exactly 6 values required and you provided only {len(values)}"
+    
+            )
+    except ValueError as e:
+        print(f"Invalid data {e}, please try again.\n")
 
 get_sales_data()
 

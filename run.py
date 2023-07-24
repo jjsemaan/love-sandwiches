@@ -79,7 +79,8 @@ def calculate_surplus_data(sales_row):
     """
     print("Calculating surplus data...\n")
     stock = SHEET.worksheet("stock").get_all_values()
-    stock_row = stock[-1]   
+    stock_row = stock[-1]
+    
     surplus_data = []
     for stock, sales in zip(stock_row, sales_row):
         surplus = int(stock) - sales
@@ -102,6 +103,22 @@ def get_last_5_entries_sales():
         columns.append(column[-5:])
 
     return columns
+
+
+def calculate_stock_data(data):
+    """
+    Calculate the average stock for each item type, adding 10%
+    """
+    print("Calculating stock data...\n")
+    new_stock_data = []
+
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+
+    return new_stock_data
 
 
 def main():

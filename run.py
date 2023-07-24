@@ -19,6 +19,7 @@ sales_data = SHEET.worksheet('sales').get_all_values()
 
 print(sales_data)
 
+
 def get_sales_data():
     """
     Get sales figures input from the user
@@ -36,6 +37,7 @@ def get_sales_data():
             print("Data is valid!")
             break
     return sales_data
+
 
 def validate_data(values):
     """
@@ -55,6 +57,7 @@ def validate_data(values):
    
     return True
 
+
 def update_sales_worksheet(data):
     """
     update sales worksheet, add a new row with the list data provided.
@@ -63,6 +66,7 @@ def update_sales_worksheet(data):
     sales_worksheet = SHEET.worksheet("sales")
     sales_worksheet.append_row(data)
     print("Sales worksheet updated successfully!.\n")
+
 
 def calculate_surplus_data(sales_row):
     """
@@ -90,10 +94,10 @@ def main():
     """
     data = get_sales_data()
     sales_data = [int(num) for num in data]
-    update_worksheet(sales_data, "sales")
+    
     new_surplus_data = calculate_surplus_data(sales_data)
     print(new_surplus_data)
 
-print("Welcome to Love Sandwiches data automation!")
+
 print("Welcome to Love Sandwiches data automation!")
 main()

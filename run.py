@@ -8,17 +8,16 @@ SCOPE = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-CREDS = Credentials.from_service_account_file('creds.json')
+# Corrected the line below to use 'scopes' instead of 'SCOPE'
+CREDS = Credentials.from_service_account_file('creds.json', scopes=SCOPE)
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love-sandwiches')
 
-sales = SHEET.worksheet('sales')
+# Renamed the 'sales' worksheet to 'sales_data' for clarity
+sales_data = SHEET.worksheet('sales').get_all_values()
 
-data = sales.get_all_values()
-
-print(data)
-
+print(sales_data)
 
 def get_sales_data():
     """
@@ -33,20 +32,18 @@ def get_sales_data():
         data_str = input("Enter your data here: ")
 
         sales_data = data_str.split(",")
-        validate_data(sales_data)
-
         if validate_data(sales_data):
             print("Data is valid!")
             break
     return sales_data
 
-
 def validate_data(values):
     """
-    Check if exactly six values are enterd.
-    Check if these can be converted to ingers
+    Check if exactly six values are entered.
+    Check if these can be converted to integers
     """
     try:
+        # Corrected the line below to convert each value to an integer
         [int(value) for value in values]
         if len(values) != 6:
             raise ValueError(
@@ -60,37 +57,43 @@ def validate_data(values):
 
 def update_sales_worksheet(data):
     """
-    update sales worksheet, add new row with the list data provided.
+    update sales worksheet, add a new row with the list data provided.
     """
     print("Updating sales worksheet...\n")
     sales_worksheet = SHEET.worksheet("sales")
     sales_worksheet.append_row(data)
     print("Sales worksheet updated successfully!.\n")
 
-
 def calculate_surplus_data(sales_row):
     """
     Compare sales with stock and calculate the surplus for each item type.
-    The surplus is calculated by subtracting sales figures from stock.
-    -positive surplus indicates waste
-    -negative surplus indicates extra sandwiches made when stocks run out.
+
+    The surplus is defined as the sales figure subtracted from the stock:
+    - Positive surplus indicates waste
+    - Negative surplus indicates extra made when stock was sold out.
     """
     print("Calculating surplus data...\n")
     stock = SHEET.worksheet("stock").get_all_values()
     stock_row = stock[-1]
-    print(stock_row)
+    
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock) - sales
+        surplus_data.append(surplus)
+
+    return surplus_data
 
 
 def main():
     """
     Run all program functions
     """
-
     data = get_sales_data()
     sales_data = [int(num) for num in data]
-    update_sales_worksheet(sales_data)
-    calculate_surplus_data(sales_data)
+    update_worksheet(sales_data, "sales")
+    new_surplus_data = calculate_surplus_data(sales_data)
+    print(new_surplus_data)
 
-
-print("Welcome to love sanwiches data automation!")
+print("Welcome to Love Sandwiches data automation!")
+print("Welcome to Love Sandwiches data automation!")
 main()
